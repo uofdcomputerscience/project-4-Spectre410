@@ -21,7 +21,7 @@ class GameViewController: UIViewController {
         for i in 0...3 {
             for j in 0...3 {
                 
-                let sImage = cropImage(image!, toRect: CGRect(x: CGFloat(i) * Width/8, y: CGFloat(j) * Height/8, width: Width/8, height: Height/8), viewWidth: Width/4, viewHeight: Height/4)
+                let sImage = cropImage(image!, toRect: CGRect(x: CGFloat(i) * image!.size.width/4, y: CGFloat(j) * image!.size.width/4, width: image!.size.height/4, height: image!.size.height/4), viewWidth: Width/4, viewHeight: Height/4)
                 let texture = SKTexture(image: sImage!)
                 let node = SKSpriteNode(texture: texture)
                 node.position = CGPoint(x: CGFloat(i) * Width/4 + Width/8, y: CGFloat(j) * Height/4 + Height/8)
