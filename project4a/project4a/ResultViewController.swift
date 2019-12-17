@@ -10,7 +10,7 @@ import UIKit
 
 class ResultViewController: UIViewController {
     @IBOutlet weak var timeLabel: UILabel!
-    var time: Int?
+    var time: Double?
     override func viewDidLoad() {
         
     }
