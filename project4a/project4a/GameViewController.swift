@@ -16,12 +16,14 @@ class GameViewController: UIViewController {
     var nodes: [SKSpriteNode] = []
     var correct_nodes: [SKSpriteNode] = []
     var scene: SKScene?
+    var scene2: SKScene?
     var last_Touched: SKSpriteNode?
     override func viewDidLoad() {
         scene = SKScene(size: skView.bounds.size)
         scene!.isUserInteractionEnabled = true
         let Width = skView.bounds.maxX - skView.bounds.minX
         let Height = skView.bounds.maxY - skView.bounds.minY
+        scene2 = SKScene(size: skView.bounds.size)
         image = UIImage(named: "starrynight.png")
         // let num: [Int] = [3,2,1,0]
         for i in 0...3 {
@@ -32,6 +34,7 @@ class GameViewController: UIViewController {
                 let node = SKSpriteNode(texture: texture)
                 node.position = CGPoint(x: CGFloat(i) * Width/4 + Width/8, y: CGFloat(3-j) * Height/4 + Height/8)
                 correct_nodes.append(node)
+                scene2?.addChild(node)
             }
         }
         let rand_1 = [1,3,2,0]
@@ -57,39 +60,27 @@ class GameViewController: UIViewController {
         }
         let location = touch.location(in: scene!)
         
-        for node in nodes {
-            let np = node.position
-            let ydistance = location.y - np.y
-            let xdistance = location.x - np.x
-            if xdistance <= 10 && ydistance <= 10{
-                if last_Touched != nil && last_Touched != node {
-                    let temp = last_Touched!.position
-                    last_Touched!.position = np
-                    node.position = np
-                    last_Touched = nil
-                }
-                else {
-                    last_Touched = node
-                }
-            }
-            
+        let t_node = scene!.nodes(at: location).first
+        
+        
+        if last_Touched == nil {
+            last_Touched = t_node as? SKSpriteNode
         }
+        guard let last = last_Touched, let touched = t_node else { return }
+        let temp = last.position
+        last.position = touched.position
+        touched.position = temp
+        if last != touched {
+            last_Touched = nil
+        }
+
         
     }
 
     @IBAction func submitTapped(_ sender: Any) {
         var answer: Bool = false
-        for node in nodes {
-            for cnode in correct_nodes {
-                if node.texture == cnode.texture{
-                    if node.position == cnode.position {
-                        answer = true
-                    }
-                    else {
-                        answer = false
-                    }
-                }
-            }
+        if scene == scene2 {
+            answer = true
         }
         
         if answer == true {
@@ -97,6 +88,15 @@ class GameViewController: UIViewController {
             vc.time = timeStart.timeIntervalSinceNow
             navigationController?.pushViewController(vc, animated: true)
         }
+        else {
+            let controller = UIAlertController(title: "An error occured", message: "The image is not yet correct!", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .cancel) { _ in
+                self.dismiss(animated: true, completion: nil)
+            }
+            controller.addAction(okAction)
+            present(controller, animated: true)
+        }
+        
     }
     
     func cropImage(_ inputImage: UIImage, toRect cropRect: CGRect, viewWidth: CGFloat, viewHeight: CGFloat) -> UIImage?

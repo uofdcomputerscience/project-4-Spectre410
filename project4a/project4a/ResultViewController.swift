@@ -12,6 +12,7 @@ class ResultViewController: UIViewController {
     @IBOutlet weak var timeLabel: UILabel!
     var time: Double?
     override func viewDidLoad() {
-        
+        super.viewDidLoad()
+        timeLabel.text = "\(time)"
     }
 }
